@@ -1,140 +1,128 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+"""""""""""""""""""""
+" Settings General"
+execute pathogen#infect()
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
 
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
+" Xcode theme
+Plug 'arzg/vim-colors-xcode'
 
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-"Plugin 'tpope/vim-fugitive'
-" plugin from http://vim-scripts.org/vim/scripts.html
-"Plugin 'L9'
-" Git plugin not hosted on GitHub
-"Plugin 'git://git.wincent.com/command-t.git'
-" git repos on your local machine (i.e. when working on your own plugin)
-"Plugin 'file:///home/gmarik/path/to/plugin'
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-"Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" NERD Tree
+Plug 'preservim/nerdtree'
 
-" The monokai color scheme.
-Plugin 'morhetz/gruvbox'
+" Python Folding
+Plug 'tmhedberg/SimpylFold'
 
-" The project source tree browser.
-Plugin 'scrooloose/nerdtree'
+" Python Indentation
+Plug 'vim-scripts/indentpython.vim'
 
-" The enhanced editor status bar.
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+" AutoComplete
+Plug 'valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
 
-" The enhanced C++ syntax highlighting.
-Plugin 'octol/vim-cpp-enhanced-highlight'
+" Syntax Highlight
+Plug 'vim-syntastic/syntastic'
 
-" The auto-complete module.
-Plugin 'Valloric/YouCompleteMe'
+" PEP8
+Plug 'nvie/vim-flake8'
 
+" Powerline
+" Plug 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
+" Initialize plugin system
+call plug#end()
 
-" ---------- Gruvbox color scheme ----------
-syntax on
-colorscheme gruvbox
-let g:gruvbox_contrast_dark = 'soft'
-set background=dark
+""""""""""""""""""""""""
+" UTF-8 Support
+set encoding=utf-8
 
-" ---------- General Settings ----------
-set backspace=indent,eol,start
+" AutoComplete
+let g:ycm_server_python_interpreter = '/usr/bin/python3'
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_complete_in_strings = 1
+let g:ycm_complete_in_comments = 1
 
-syntax enable
+"theme setting
+colorscheme xcodedark
 
-" Show line numbers
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" NERD Tree settings
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+" Vim Basic settings
 set number
-
-" Highlight matching brace
-set showmatch
-
-" Highlight all search results
-set hlsearch
-
-" Highlight the current cursor line
-set cursorline
-
-" Highlight the 80 columns margin.
-set colorcolumn=80
-
-" Trim the trailing white space on save.
-autocmd BufWritePre <buffer> :%s/\s\+$//e
-
-" ---------- Indentation ----------
-" Use spaces instead of tabs
-set expandtab
-
-" Number of spaces that a <TAB> in the file counts for
-set tabstop=4
-
-" Number of auto-indent spaces
-set shiftwidth=4
 set autoindent
+syntax on
+set title
+set clipboard=unnamed
+let python_highlight_all=1
 
-" ---------- Folding ----------
-set foldenable
-set foldmethod=syntax
-
-" Do not fold the code by default
-set foldlevel=10000
-
-" ---------- NerdTree Project Browser ----------
-nnoremap <C-n> :NERDTreeToggle<CR>
-
-let NERDTreeShowHidden=1
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-
-
-" ---------- Enhanced C++ syntax highlighting ----------
-let g:cpp_class_scope_highlight=1
-let g:cpp_concepts_highlight=1
-let g:cpp_experimental_simple_template_highlight=1
-
-
-" ---------- YCM Auto Complete ----------
-nnoremap <F12> :YcmCompleter GoTo<CR>
-
-"let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_collect_identifiers_from_tags_files = 1
-set clipboard=unnamedplus
-vmap <C-c> y:call system("xclip -i -selection clipboard", getreg("\""))<CR>:call system("xclip -i", getreg("\""))<CR>
-
-"auto brace"
-inoremap " ""<left>
-inoremap ' ''<left>
-inoremap ( ()<left>
-inoremap [ []<left>
-inoremap { {}<left>
-inoremap {<CR> {<CR>}<ESC>O
-inoremap {;<CR> {<CR>};<ESC>O
-inoremap ) <right>
-"auto make"
-nnoremap <C-c> :!g++ -o  %:r.out % -std=c++11<Enter>
+" CPP
+nnoremap <C-c> :!g++ $(pkg-config --cflags --libs opencv) -o  %:r.out % -std=c++11<Enter>
 nnoremap <C-x> :!./%:r.out
+
+" Split Navigation
+set splitbelow
+set splitright
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" Code Folding
+set foldmethod=indent
+set foldlevel=99
+" Enable folding with the spacebar
+nnoremap <space> za
+" Docstring View enable in fold
+let g:SimpylFold_docstring_preview=1
+
+" WhiteSpace Flagging
+highlight BadWhitespace ctermbg=red guibg=darkred
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+" AutoComplete Goaway
+let g:ycm_autoclose_preview_window_after_completion=1
+
+" Python Indentation Setup
+au BufNewFile,BufRead *.py
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=79 |
+    \ set expandtab |
+    \ set autoindent |
+    \ set fileformat=unix
+
+" FrontEnd
+au BufNewFile,BufRead *.js, *.html, *.css
+    \ set tabstop=2 |
+    \ set softtabstop=2 |
+    \ set shiftwidth=2 |
+
+" ycm blacklist setup for autocomplete
+let g:ycm_filetype_blacklist = {
+    \ 'tagbar' : 1,
+    \ 'qf' : 1,
+    \ 'notes' : 1,
+    \ 'markdown' : 1,
+    \ 'unite' : 1,
+    \ 'text' : 1,
+    \ 'vimwiki' : 1,
+    \ 'pandoc' : 1,
+    \ 'infolog' : 1,
+    \ 'mail' : 1
+    \}
